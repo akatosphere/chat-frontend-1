@@ -4,10 +4,16 @@ import apartment_icon from '../../assets/icons/А-недвижимость.svg'
 import video_icon from "../../assets/icons/A-video.svg"
 import ads_icon from '../../assets/icons/А-объявления.svg'
 import restaurant_icon from "../../assets/icons/А-рестораны.svg"
+import edit_icon from "../../assets/icons/edit.svg"
+import block_icon from "../../assets/icons/block.svg"
+import support from "../../assets/icons/support.svg"
+import leave_icon from "../../assets/icons/leave.svg"
 import { LazyMotion, domMax, m, useAnimation } from "framer-motion";
 import { useState } from "react"
 interface AddedServiceProps{
-    variant: "apartment" | "video" | "restaurant" | "ads"
+    variant: "apartment" | "video" | "restaurant" | "ads" | "edit" | "blackList" | "support" | "leave"
+    isScroll?: boolean,
+    showArrow?: boolean
 }
 const config = {
     apartment: {
@@ -25,19 +31,35 @@ const config = {
       ads: {
         icon: ads_icon,
         title: "А-объявления",
+      },
+      edit: {
+        icon: edit_icon,
+        title: "Редактировать профиль"
+      },
+      blackList: {
+        icon: block_icon,
+        title: "Черный список"
+      },
+      support: {
+        icon: support,
+        title: "Написать в поддержку"
+      },
+      leave: {
+        icon: leave_icon,
+        title: "Выйти из аккаунта"
       }
 }
 
 const AddedService = (props:AddedServiceProps) => {
   const [isOpen,setIsOpen] = useState(false)
-  const {variant} = props;
+  const {variant,isScroll = true,showArrow = true} = props;
   const controls = useAnimation();
   const cur_config = config[variant];
   return (
     <div className="relative overflow-hidden w-full">
       <LazyMotion features={domMax}>
-        <m.div drag = "x"
-         className="py-4 bg-white border-b cursor-grab active:cursor-grabbing relative z-10"
+        <m.div drag = {isScroll ? "x" : false}
+         className="py-6 bg-white border-b-[0.33px] border-b-black/30 cursor-grab active:cursor-grabbing relative z-10"
          dragConstraints = {{right: 0,left: -63}}
          dragElastic = {0.1}
          animate = {controls}
@@ -68,9 +90,14 @@ const AddedService = (props:AddedServiceProps) => {
                 {cur_config.title}
               </span>
             </div>
-            <div className="w-[63px] flex items-center justify-center">
-              <Arrow width={11} height={20} />
-            </div>
+            {
+              showArrow && (
+                <div className="w-[63px] flex items-center justify-center">
+                  <Arrow width={11} height={20} />
+                </div>
+              )
+            }
+            
           </div>
         </m.div>
       </LazyMotion>

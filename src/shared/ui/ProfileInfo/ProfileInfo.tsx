@@ -12,7 +12,7 @@ const ProfileInfo = (props: Props) => {
     const {fullName,phone,email,avatar} = props
     const defaultPhoto = {avatar: ""}
   return (
-    <div className='border border-primary p-3 rounded-lg flex  items-center gap-3'>
+    <div className='border-2 border-primary p-3 rounded-lg flex  items-center gap-3'>
         <UserAvatar showStatus = {false} size={20} avatar={avatar ? avatar : defaultPhoto}/>
         <div className='space-y-1'>
             <h1 className='font-medium text-[18px] leading-[120%] text-black'>{fullName}</h1>
