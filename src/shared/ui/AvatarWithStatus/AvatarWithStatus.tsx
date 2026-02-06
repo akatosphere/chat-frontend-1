@@ -2,42 +2,30 @@
 import React from "react";
 
 export type UserAvatarVariant =
-  | "avatarOnly" // только круглая картинка, без статуса (теперь по умолчанию)
-  | "avatarWithStatusRight"; // аватар слева, статус справа
+  | "avatarOnly"
+  | "avatarWithStatusRight";
 
 export type AvatarProps = {
-  /** URL аватара. Приоритет: avatar_webp_url > avatar_url > avatar_webp > avatar */
   avatar_webp_url?: string;
   avatar_url?: string;
   avatar_webp?: string;
   avatar?: string;
-  /** Альтернативный текст для изображения */
   alt?: string;
 };
 
 type StatusProps = {
-  /** Пользователь онлайн */
   is_online?: boolean;
-  /** Время последнего визита (UNIX timestamp в секундах). Теперь может быть undefined. */
   was_online_at?: number | undefined; 
 };
 
 type UserAvatarProps = {
-  /** Пропсы для аватара */
   avatar: AvatarProps;
-  /** Пропсы для статуса */
   status?: StatusProps;
-  /** Размер в абстрактных единицах. 1 ед. ≈ 4px (size=10 → ~40px). */
   size?: number;
-  /** Вариант раскладки аватара и статуса. */
   variant?: UserAvatarVariant;
-  /** Показывать ли строку статуса. */
   showStatus?: boolean;
-  /** Скрыть аватар. */
   hideAvatar?: boolean;
-  /** Состояние соединения. Если true, показывается "соединяемся". */
   isConnecting?: boolean;
-  /** Дополнительные классы для текста статуса (переопределяет стандартные цвета) */
   statusTextClassName?: string;
 };
 
@@ -51,21 +39,26 @@ function pickAvatarUrl(avatar: AvatarProps): string {
   );
 }
 
-function formatLastSeen(timestamp: number | undefined): string  {
+
+function formatLastSeen(timestamp: number | undefined): string {
   if (!timestamp) return "недавно";
 
-  const date = new Date(timestamp * 1000); // UNIX‑секунды
-  const diffMs = Date.now() - date.getTime();
-
-  if (Number.isNaN(diffMs) || diffMs < 0) return "недавно";
-
+  const date = new Date(timestamp * 1000);
+  const now = Date.now();
+  
+  
+  const diffMs = Math.abs(now - date.getTime());
   const diffMinutes = Math.floor(diffMs / (1000 * 60));
-  const diffHours = Math.floor(diffMinutes / 60);
-  const diffDays = Math.floor(diffHours / 24);
 
   if (diffMinutes < 1) return "был(а) только что";
   if (diffMinutes < 60) return `был(а) ${diffMinutes} мин назад`;
-  if (diffHours < 24) return `был(а) ${diffHours} ч назад`;
+
+  const diffHours = Math.floor(diffMinutes / 60);
+  if (diffHours < 24) {
+    return `был(а) в ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+  }
+
+  const diffDays = Math.floor(diffHours / 24);
   if (diffDays === 1) return "был(а) вчера";
   if (diffDays < 7) return `был(а) ${diffDays} дн назад`;
 
@@ -75,8 +68,8 @@ function formatLastSeen(timestamp: number | undefined): string  {
 function getStatusText(status: StatusProps | undefined, isConnecting?: boolean): string {
   if (isConnecting) return "соединение...";
   if (!status) return "";
-  if (status.is_online) return "в сети";
-  // was_online_at теперь имеет тип number | undefined, что безопасно передавать
+  // Строгая проверка на онлайн
+  if (status.is_online === true) return "в сети";
   return formatLastSeen(status.was_online_at);
 }
 
@@ -95,6 +88,7 @@ export function UserAvatar({
   const dimension = `${px}px`;
 
   const statusText = getStatusText(status, isConnecting);
+  // Статус показывается, если это не вариант "только аватар"
   const shouldShowStatus = showStatus && variant !== "avatarOnly" && statusText;
 
   const avatarElement = hideAvatar ? null : (
@@ -119,7 +113,7 @@ export function UserAvatar({
   );
 
   const statusElement =
-    shouldShowStatus && statusText ? (
+    shouldShowStatus ? (
       <span
         className={
           statusTextClassName ||
@@ -134,9 +128,7 @@ export function UserAvatar({
       </span>
     ) : null;
 
-  // Обработка варианта "avatarWithStatusRight"
   if (variant === "avatarWithStatusRight") {
-    // Если аватар скрыт, в этом режиме показываем только статус
     if (hideAvatar) {
       return <div className="inline-flex">{statusElement}</div>;
     }
@@ -148,6 +140,5 @@ export function UserAvatar({
     );
   }
   
-  // Вариант по умолчанию: avatarOnly
   return <div className="inline-flex">{avatarElement}</div>;
 }
