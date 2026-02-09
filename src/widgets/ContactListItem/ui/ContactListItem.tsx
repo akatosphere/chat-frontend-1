@@ -8,7 +8,6 @@ type ContactItemProps = {
   name: string;
   avatarUrl?: string;
   is_online?: boolean;
-  isOnline?: boolean; // alias для is_online
   was_online_at?: number;
   showCheckbox?: boolean; // свойство, чтобы управлять видимостью чекбокса 
   isSelected: boolean;
@@ -21,7 +20,6 @@ export const InviteContactItem: React.FC<ContactItemProps> = ({
   name,
   avatarUrl,
   is_online,
-  isOnline,
   was_online_at,
   showCheckbox = true, // По умолчанию показываем чекбокс
   isSelected,
@@ -34,7 +32,7 @@ export const InviteContactItem: React.FC<ContactItemProps> = ({
   };
   
   const fullAvatarUrl = avatarUrl; 
-  const statusProps = { is_online: is_online ?? isOnline, was_online_at };
+  const statusProps = { is_online, was_online_at };
 
   return (
     <li className={`relative group flex items-center justify-between p-4`}>

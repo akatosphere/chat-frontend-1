@@ -15,7 +15,7 @@ interface ForwardingScreenProps {
 export const ForwardingScreen: React.FC<ForwardingScreenProps> = ({
     contacts, forwardTo, onCancel, onSend, onSelect
 }) => {
-    const isSelected = Boolean(forwardTo);
+    
 
     return (
         // Оверлей)
@@ -38,7 +38,7 @@ export const ForwardingScreen: React.FC<ForwardingScreenProps> = ({
                     <SearchInput theme="gray" />
                 </div>
 
-                {/* Список контактов */}
+{/* Список контактов */}
 <div className="overflow-y-auto flex-1 px-4 py-2">
     <div className="flex flex-col gap-0.5 pb-6">
         {contacts.map((item: any) => {
@@ -49,17 +49,20 @@ export const ForwardingScreen: React.FC<ForwardingScreenProps> = ({
                 <div 
                     key={item.uid} 
                     onClick={() => onSelect(item.uid)}
-                    className="cursor-pointer px-2"
+                    // Добавил классы: hover:bg, transition, rounded и cursor-pointer. в дизайне нет но и без этого можно ошибиться с выбором
+                    className="cursor-pointer px-2 py-0.5 hover:bg-cyan transition-colors rounded-xl"
                 >
                     <InviteContactItem 
                         id={item.uid} 
                         name={`${item.first_name} ${item.last_name}`} 
-                        isOnline={actualIsOnline} 
+                        is_online={actualIsOnline} 
                         was_online_at={actualTimestamp}
                         avatarUrl={item.avatar_url}
                         showCheckbox={false} 
                         isSelected={forwardTo === item.uid}
                         onChange={() => {}} 
+                        // Чтобы пропсы внутри InviteContactItem не конфликтовали с hover обертки:
+                        showDivider={false} 
                     />
                 </div>
             );

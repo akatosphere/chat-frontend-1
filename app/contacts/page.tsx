@@ -7,12 +7,11 @@ import { SearchInput } from "@/shared/ui/SearchInput"
 import { InviteContactItem } from "@/widgets/ContactListItem/ui/ContactListItem"
 import Snackbar from "./ui/Snackbar"
 import { useContactStore, Contact } from "@/entities/contact/model/store"
-import { useUserStore } from "@/entities/user/model/store"
 import { ForwardingScreen } from "@/widgets/ForwardingModal/ForwardingModal"
 
 const Page = () => {
     const { contacts, fetchContacts, deleteContactsFromState, syncDeleteContacts, addContactsToState, isLoading } = useContactStore();
-    const { currentUser } = useUserStore(); // Достаем текущего юзера
+    
 
     // Состояния для удаления
     const [selected, setSelected] = useState<string[]>([]);
@@ -173,16 +172,14 @@ const Page = () => {
             />
 
             {isForwardScreenOpen && (
-                <ForwardingScreen
-                    contacts={contacts.filter(c =>
-                        c.uid !== currentUser?.uid && !selected.includes(c.uid)
-                    )}
-                    forwardTo={forwardTo}
-                    onCancel={handleCancelForward}
-                    onSend={handleSendForward}
-                    onSelect={handleSelectForward}
-                />
-            )}
+    <ForwardingScreen 
+        contacts={contacts} // Передаем все контакты напрямую
+        forwardTo={forwardTo}
+        onCancel={handleCancelForward}
+        onSend={handleSendForward}
+        onSelect={handleSelectForward}
+    />
+)}
 
         </main>
     )
