@@ -8,7 +8,7 @@ type InviteContactItemProps = {
   name: string;
   avatarUrl?: string;
   isOnline: boolean;
-  wasOnlineAt?: number;
+  was_online_at?: number;
   isSelected: boolean;
   showDivider?: boolean; // Управляет отображением разделителя
   onChange: (contactId: string, isChecked: boolean) => void;
@@ -19,7 +19,7 @@ export const InviteContactItem: React.FC<InviteContactItemProps> = ({
   name,
   avatarUrl,
   isOnline,
-  wasOnlineAt,
+   was_online_at,
   isSelected,
   showDivider = true,
   onChange,
@@ -29,7 +29,7 @@ export const InviteContactItem: React.FC<InviteContactItemProps> = ({
   };
   
   const fullAvatarUrl = avatarUrl; 
-  const statusProps = { is_online: isOnline, was_online_at: wasOnlineAt };
+  const statusProps = { is_online: isOnline, was_online_at: was_online_at };
 
   return (
     <li 
